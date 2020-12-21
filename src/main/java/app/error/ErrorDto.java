@@ -5,6 +5,6 @@ import lombok.Value;
 @Value
 public class ErrorDto {
 
-    public final String message;
-    public final Option<String> path;
+    public String message;
+    public Option<String> path;
 }

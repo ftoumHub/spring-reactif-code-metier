@@ -6,7 +6,7 @@ import lombok.Value;
 @Value
 public class AskForHelp {
 
-    public final String name;
-    public final Problem problem;
+    public String name;
+    public Problem problem;
 
 }

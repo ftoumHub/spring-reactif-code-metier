@@ -13,28 +13,24 @@ import app.error.AppErrors;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
 import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class FindHelpService {
 
     private final SuperHeroes superHeroes;
     private final Abilities abilities;
     private final Weaknesses weaknesses;
 
-    public FindHelpService(SuperHeroes superHeroes, Abilities abilities, Weaknesses weaknesses) {
-        this.superHeroes = superHeroes;
-        this.abilities = abilities;
-        this.weaknesses = weaknesses;
-    }
-
     public IO<HelpErrors, HelpResult> findHelp(AskForHelp askForHelp) {
         return this.superHeroes.lookForSuperhero(askForHelp.name)
             .mapError(HelpErrors::fromSuperheroErrors)
             .flatMap(superhero ->
                     IO.parZip(
-                            abilities.checkAbilities(superhero, askForHelp.problem).<AppError>refine(),
+                            abilities.checkAbilities(superhero, askForHelp.problem).refine(),
                             weaknesses.checkWeaknesses(superhero, askForHelp.problem).<AppError>refine(),
                             (abilities, __) -> HelpResult.builder()
                                     .hero(superhero)
